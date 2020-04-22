@@ -2,6 +2,10 @@ package amazonTest;
 
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -18,34 +22,35 @@ import org.testng.annotations.Test;
 
 import amazonTest.createAccount;
 import amazonTest.searchProduct;
-import amazonTest.configuration;
-import amazonTest.ConfigFileReader;
+
 
 
 
 public class amazonMain {
 
 	ConfigFileReader configReader;
-	
-	
-    
-    WebDriver driver;
-    
-
+	WebDriver driver;
     createAccount createacc;
     searchProduct prodSearch;
 
     @BeforeTest
 
-    public void setup(){
+    public void setup() throws FileNotFoundException{
     	
-    	configReader = new ConfigFileReader();
-	System.setProperty("webdriver.chrome.driver", configReader.getDriverPath());
+    	Properties prop = new Properties();
+		InputStream in = new FileInputStream("C:\\Users\\u26494\\eclipse-workspace\\amazonTestUnoSquare\\configs\\Configuration.properties");
+		try {
+			prop.load(in);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(prop.getProperty("driverPath"));
+		System.setProperty("webdriver.chrome.driver", prop.getProperty("driverPath"));
 			        
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-       configReader.getImplicitlyWait();
-        driver.get(configReader.getApplicationUrl());
+        driver.get(prop.getProperty("url"));
 
     }
 
@@ -54,11 +59,10 @@ public class amazonMain {
 
     public void account_Creation(){
 
-        //Create Login Page object
+        
 
     createacc = new createAccount(driver);
-   // driver.findElement(By.xpath("//*[@id=\"nav-link-accountList\"]")).click();
-    
+  
     createacc.createAccount();
     createacc.account_Create("Shivakumar", "shivakumar.chandramouli.desai@gmail.com", "Shivakumar", "Shivakumar");
    
